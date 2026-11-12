@@ -1,0 +1,213 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <title>Banner LGPD — Clínica Vida</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+  <main class="conteudo">
+    <h1>Clínica Vida</h1>
+    <p>Atendimento humanizado e tecnologia de ponta.</p>
+    <button onclick="reabrirPreferencias()">Reabrir preferências de cookies</button>
+  </main>
+
+  <!-- Banner LGPD -->
+  <div class="banner" id="banner">
+    <h2>Valorizamos sua privacidade</h2>
+    <p>Escolha quais categorias de cookies deseja aceitar.</p>
+
+    <label><input type="checkbox" checked disabled> Essenciais (sempre ativos)</label>
+    <label><input type="checkbox" id="chk-analise"> Análise</label>
+    <label><input type="checkbox" id="chk-marketing"> Marketing</label>
+
+    <div class="banner-botoes">
+      <button onclick="aceitarTodos()">Aceitar todos</button>
+      <button onclick="aceitarApenasEssenciais()">Apenas essenciais</button>
+      <button onclick="salvarSelecao()">Salvar seleção</button>
+    </div>
+  </div>
+
+  <!-- Painel de status -->
+  <div class="painel-status" id="painel-status"></div>
+
+  <script src="script.js"></script>
+</body>
+
+<style>
+
+* { margin: 0; padding: 0; box-sizing: border-box; }
+
+body {
+  font-family: 'Segoe UI', sans-serif;
+  background: #f1f5f9;
+  color: #0f172a;
+  min-height: 100vh;
+}
+
+.conteudo {
+  max-width: 700px;
+  margin: 40px auto;
+  padding: 32px;
+  background: #fff;
+  border-radius: 16px;
+  box-shadow: 0 6px 20px rgba(0,0,0,.08);
+}
+
+.conteudo h1 {
+  font-size: 1.5rem;
+  color: #0f172a;
+  margin-bottom: 8px;
+}
+
+.conteudo p {
+  color: #64748b;
+  font-size: 0.92rem;
+  margin-bottom: 16px;
+}
+
+.conteudo button {
+  background: #f1f5f9;
+  color: #334155;
+  border: 1px solid #cbd5e1;
+  padding: 8px 16px;
+  border-radius: 6px;
+  font-weight: 700;
+  cursor: pointer;
+  font-size: 0.84rem;
+}
+
+.conteudo button:hover { background: #e2e8f0; }
+
+.banner {
+  position: fixed;
+  bottom: 24px;
+  left: 50%;
+  transform: translateX(-50%);
+  max-width: 500px;
+  width: 90%;
+  background: #1e1b4b;
+  color: #fff;
+  padding: 24px;
+  border-radius: 16px;
+  box-shadow: 0 12px 40px rgba(0,0,0,.4);
+  z-index: 100;
+}
+
+.banner h2 { font-size: 1.1rem; margin-bottom: 8px; }
+.banner p { font-size: 0.9rem; opacity: 0.9; margin-bottom: 12px; }
+.banner label {
+  display: block;
+  padding: 8px 0;
+  font-size: 0.9rem;
+  cursor: pointer;
+}
+
+.banner-botoes {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+  margin-top: 12px;
+}
+
+.banner-botoes button {
+  padding: 10px 16px;
+  border-radius: 8px;
+  border: none;
+  font-weight: 700;
+  font-size: 0.82rem;
+  cursor: pointer;
+  font-family: inherit;
+  background: #7c3aed;
+  color: #fff;
+  transition: 0.2s;
+}
+
+.banner-botoes button:hover { background: #6d28d9; }
+
+.painel-status {
+  max-width: 500px;
+  margin: 20px auto;
+  padding: 16px 20px;
+  background: #fff;
+  border-radius: 12px;
+  box-shadow: 0 4px 12px rgba(0,0,0,.06);
+  font-size: 0.9rem;
+}
+
+.oculto { display: none !important; }
+
+</style>
+
+<script>
+
+// ============================================================
+// BANNER LGPD — script completo para você adaptar
+// ============================================================
+
+// 1. Ao carregar a página, verificar se o usuário já consentiu.
+//    Se sim, esconder o banner e mostrar o painel de status.
+window.addEventListener("load", function() {
+  var consentimento = getCookie("consentimento_lgpd");
+  if (consentimento) {
+    document.getElementById("banner").classList.add("oculto");
+    atualizarPainel();
+  }
+});
+
+// 2. Aceitar todos os cookies (essenciais + análise + marketing)
+function aceitarTodos() {
+  document.cookie = "consentimento_lgpd=todos; max-age=31536000; path=/";
+  document.cookie = "cat_analise=sim; max-age=31536000; path=/";
+  document.cookie = "cat_marketing=sim; max-age=31536000; path=/";
+  document.getElementById("banner").classList.add("oculto");
+  atualizarPainel();
+}
+
+// 3. Aceitar apenas os essenciais (sempre ativos)
+function aceitarApenasEssenciais() {
+  document.cookie = "consentimento_lgpd=essenciais; max-age=31536000; path=/";
+  document.cookie = "cat_analise=nao; max-age=31536000; path=/";
+  document.cookie = "cat_marketing=nao; max-age=31536000; path=/";
+  document.getElementById("banner").classList.add("oculto");
+  atualizarPainel();
+}
+
+// 4. Salvar a seleção do usuário (customizada)
+function salvarSelecao() {
+  var analise = document.getElementById("chk-analise").checked ? "sim" : "nao";
+  var marketing = document.getElementById("chk-marketing").checked ? "sim" : "nao";
+
+  document.cookie = "consentimento_lgpd=custom; max-age=31536000; path=/";
+  document.cookie = "cat_analise=" + analise + "; max-age=31536000; path=/";
+  document.cookie = "cat_marketing=" + marketing + "; max-age=31536000; path=/";
+  document.getElementById("banner").classList.add("oculto");
+  atualizarPainel();
+}
+
+// 5. Reabrir o banner para o usuário mudar de ideia
+function reabrirPreferencias() {
+  document.getElementById("banner").classList.remove("oculto");
+}
+
+// 6. Atualizar o painel de status com o estado atual dos cookies
+function atualizarPainel() {
+  var analise = getCookie("cat_analise") === "sim" ? "Ativo" : "Bloqueado";
+  var marketing = getCookie("cat_marketing") === "sim" ? "Ativo" : "Bloqueado";
+
+  document.getElementById("painel-status").innerHTML =
+    "<p><strong>Essenciais:</strong> Sempre ativos</p>" +
+    "<p><strong>Análise:</strong> " + analise + "</p>" +
+    "<p><strong>Marketing:</strong> " + marketing + "</p>";
+}
+
+// 7. Função auxiliar para ler um cookie pelo nome
+function getCookie(nome) {
+  var match = document.cookie.match(new RegExp("(^| )" + nome + "=([^;]+)"));
+  return match ? decodeURIComponent(match[2]) : null;
+}
+
+</script>
+
+</html>
